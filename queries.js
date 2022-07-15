@@ -1,4 +1,5 @@
 const { response } = require("express");
+const jwt_decode = require("jwt-decode");
 
 const Pool = require("pg").Pool;
 const pool = new Pool({
@@ -36,17 +37,21 @@ const getCustomer = (request, response) => {
 };
 
 const getVendorDetailsAsVendor = async (request, response) => {
-  const id = parseInt(request.params.id);
+  const { authorization } = request.headers;
+  const decoded = jwt_decode(authorization);
+  const { sub } = decoded;
+
   try {
     const { rows: vendorRows } = await pool.query(
-      "SELECT company_name, food_type FROM vendors WHERE id = $1",
-      [id]
+      "SELECT company_name, food_type, id FROM vendors WHERE auth_0_id = $1",
+      [sub]
     );
     const { rows: menuItemRows } = await pool.query(
       "SELECT * FROM menu_items WHERE vendor_id = $1",
-      [id]
+      [vendorRows[0].id]
     );
     const data = {
+      auth_0_id: vendorRows[0].auth_0_id,
       company_name: vendorRows[0].company_name,
       food_type: vendorRows[0].food_type,
       menu_items: menuItemRows,
@@ -157,7 +162,7 @@ const createOrder = (request, response) => {
 };
 
 const deleteMenuItem = (request, response) => {
-  const id = parseIn(request.params.id);
+  const id = parseInt(request.params.id);
   pool.query("DELET FROM menu_items WHERE id = $1", [id], (error) => {
     if (error) {
       throw error;
