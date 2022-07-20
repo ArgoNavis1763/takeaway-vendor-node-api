@@ -3,12 +3,13 @@ const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
-const port = process.env.PORT | 3001;
+
 const db = require("./queries");
 const cors = require("cors");
 const { expressjwt: jwt } = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
 const menuItems = require("./DB/menu_items");
+const port = process.env.PORT | 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
