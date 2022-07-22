@@ -26,6 +26,21 @@ const update = async (request, response) => {
   }
 };
 
+const getMenuItem = (request, response) => {
+  console.log("getmenuitem being hit and working");
+  const id = parseInt(request.params.id);
+  pool.query(
+    "SELECT * FROM menu_items WHERE id = $1",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
 const getMenuDetails = async (request, response) => {
   try {
     const vendor = await fetchVendor(request.headers.authorization);
@@ -106,6 +121,7 @@ const createOrder = (request, response) => {
 
 module.exports = {
   update,
+  getMenuItem,
   getMenuDetails,
   createOrder,
   deleteMenuItem,

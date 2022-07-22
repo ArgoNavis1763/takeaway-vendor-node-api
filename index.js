@@ -43,7 +43,7 @@ app.patch("/customers/:id", db.editNumber);
 app.post("/orders", menuItems.createOrder);
 
 app.get("/vendor_details", checkJwt, menuItems.getMenuDetails);
-
+app.get("/vendors/menu_item/:id", menuItems.getMenuItem);
 app.patch("/vendors/menu_item/:id", menuItems.update);
 app.delete("/vendors/menu_item/:id", menuItems.deleteMenuItem);
 app.post("/vendors", menuItems.addMenuItem);
