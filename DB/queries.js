@@ -1,6 +1,8 @@
 const { response } = require("express");
 const jwt_decode = require("jwt-decode");
-const { pool, fetchVendor } = require("./DB/index");
+const { pool, fetchVendor } = require("./index");
+const { expressjwt: jwt } = require("express-jwt");
+const jwksRsa = require("jwks-rsa");
 
 const getCustomers = (request, response) => {
   pool.query("SELECT * FROM customers", (error, results) => {
@@ -66,10 +68,22 @@ const editNumber = (request, response) => {
   );
 };
 
+const createVendor = async (request, response) => {
+  const { name, food_type, postcode, description, auth_0_id } = request.body;
+  const id = parseInt(request.params.id);
+  const decoded = jwt_decode(authorization);
+  const { sub } = decoded;
+  const result = await pool.query(
+    "INSERT INTO vendors (name, food_type, postcode, description, auth_0_id) VALUES ($1, $2, $3, $4, $5",
+    [name, food_type, postcode, description, sub]
+  );
+};
+
 module.exports = {
   getCustomers,
   createCustomer,
   getCustomer,
   deleteCustomer,
   editNumber,
+  createVendor,
 };

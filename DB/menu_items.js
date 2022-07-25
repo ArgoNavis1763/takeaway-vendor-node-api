@@ -1,6 +1,8 @@
 const { response } = require("express");
 const jwt_decode = require("jwt-decode");
 const { pool, fetchVendor } = require("./index");
+const { expressjwt: jwt } = require("express-jwt");
+const jwksRsa = require("jwks-rsa");
 
 const update = async (request, response) => {
   const id = parseInt(request.params.id);

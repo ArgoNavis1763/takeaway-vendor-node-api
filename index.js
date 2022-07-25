@@ -4,7 +4,7 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 
-const db = require("./queries");
+const db = require("./DB/queries");
 const cors = require("cors");
 const { expressjwt: jwt } = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
@@ -41,12 +41,13 @@ app.post("/customers", db.createCustomer);
 app.delete("/customers/:id", db.deleteCustomer);
 app.patch("/customers/:id", db.editNumber);
 app.post("/orders", menuItems.createOrder);
+app.post("/create_vendor", checkJwt, db.createVendor);
 
 app.get("/vendor_details", checkJwt, menuItems.getMenuDetails);
-app.get("/vendors/menu_item/:id", menuItems.getMenuItem);
-app.patch("/vendors/menu_item/:id", menuItems.update);
-app.delete("/vendors/menu_item/:id", menuItems.deleteMenuItem);
-app.post("/vendors", menuItems.addMenuItem);
+app.get("/vendors/menu_item/:id", checkJwt, menuItems.getMenuItem);
+app.patch("/vendors/menu_item/:id", checkJwt, menuItems.update);
+app.delete("/vendors/menu_item/:id", checkJwt, menuItems.deleteMenuItem);
+app.post("/vendors", checkJwt, menuItems.addMenuItem);
 
 app.listen(port, () => {
   console.log("My node app is running on port", port);
